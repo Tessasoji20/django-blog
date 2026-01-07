@@ -1,5 +1,6 @@
 from django.contrib import admin
-from blogs.models import Category,Blog
+from blogs.models import Category,Blog,About
+from blogs.models import Sociallink
 
 class BlogAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ("title",)}##slug generation
@@ -7,6 +8,18 @@ class BlogAdmin(admin.ModelAdmin):
     search_fields = ('id','title','category__category_name','status')
     list_editable = ('is_featured',)
 
+class AboutAdmin(admin.ModelAdmin):
+    # to allow  only single entry in the about model
+    def has_add_permission(self, request):
+        count=About.objects.all().count()
+        if count==0:
+            return True
+        else:
+            return False
+
+
 # Register your models here.
 admin.site.register(Category)
 admin.site.register(Blog,BlogAdmin)
+admin.site.register(About,AboutAdmin)
+admin.site.register(Sociallink)

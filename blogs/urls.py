@@ -21,5 +21,6 @@ from . import views
 urlpatterns = [
     path('category/<int:pk>/', views.posts_by_category, name='posts_by_category'),
     path('error/',views.Error_404,name='error404'),
-
+    #search endpoint
+    path('search/',views.search, name='search'),
 ]
