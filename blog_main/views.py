@@ -58,7 +58,7 @@ def userlogin(request):
              user = authenticate(username=u, password=p)
              if user:
                  login(request,user)
-                 return redirect('home')
+                 return redirect('dashboard')
              else:
                  messages.error(request, 'Username or Password is incorrect')
                  # return redirect('users:userlogin')
