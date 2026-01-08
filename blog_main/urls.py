@@ -30,6 +30,9 @@ urlpatterns = [
 
     # Single blog detail (slug)
     path('blog/<slug:slug>/', BlogView.blogs, name='blogs'),
+    path('register/', views.register, name='register'),
+    path('login/', views.userlogin, name='userlogin'),
+    path('logout/', views.userlogout, name='userlogout'),
 
 ]
 
