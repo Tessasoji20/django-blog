@@ -2,13 +2,16 @@ from django.shortcuts import render,redirect
 
 from blogs.models import Category
 from blogs.models import Blog
-
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from dashboards.forms import CategoryForm
 from django.template.context_processors import request
 
 from dashboards.forms import BlogForm
 from django.template.defaultfilters import slugify
+
+from dashboards.forms import AddUserForm,EditUserForm
+
 
 @login_required(login_url='userlogin')  #only when managers,editors are loggedin,after that only they can visit dashboards
 def dashboard(request):
@@ -99,3 +102,41 @@ def delete_post(request, pk):
     post.delete()
     return redirect('posts')
 
+def users(request):
+    userss = User.objects.all()
+    context = {
+        'users': userss,
+    }
+    return render(request, 'dashboard/users.html',context)
+
+
+def add_user(request):
+    if request.method == 'POST':
+        form_instance = AddUserForm(request.POST)
+        if form_instance.is_valid():
+            form_instance.save()
+            return redirect('users')
+        else:
+            print(form_instance.errors)
+    form_instance=AddUserForm()
+    context = {
+        'form': form_instance,
+    }
+    return render(request, 'dashboard/add_user.html',context)
+
+def edit_user(request, pk):
+    if request.method == 'POST':
+        form_instance = EditUserForm(request.POST, instance=User.objects.get(pk=pk))
+        if form_instance.is_valid():  #manager dont have to edit passwords
+            form_instance.save()
+            return redirect('users')
+    form_instance = EditUserForm(instance=User.objects.get(pk=pk))
+    context = {
+        'form': form_instance,
+    }
+    return render(request, 'dashboard/edit_user.html',context)
+
+def delete_user(request, pk):
+    u=User.objects.get(pk=pk)
+    u.delete()
+    return redirect('users')
