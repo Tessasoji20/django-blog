@@ -21,7 +21,40 @@
                 <section class="mb-5">
                     <p class="fs-5 mb-4">{{single_blog.short_description}}</p>
                     <p class="fs-5 mb-4">{{single_blog.blog_body}}</p>
-                    </section>
+                    <!--                        commnets-->
+                    <h4>Comments {{ comment_count }}</h4>
+                    {% if comments %}
+                        {% for c in comments %}
+                            <div class="card">
+                                <div class="card-body">
+                                    <p class="card-text mb-0">{{ c }}</p>
+                                    <span>
+                                        <small>By {{ c.user }}</small>
+                                        <small>| {{ c.created_at|timesince }}ago</small>
+                                    </span>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                    No comments yet
+                    {% endif %}
+                    <br>
+                    <div class="form-group">
+                        {% if user.is_authenticated %}
+                        <!-- only logged members should see the form                       -->
+                        <form action="" method="post">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <textarea name="comment" class="form-control" placeholder="Write your comment"></textarea>
+                                <input type="submit" value="submit" class="btn btn-primary mt-2">
+                            </div>
+
+                        </form>
+                        {% else %}
+                            <p>Please <span><a href="{% url 'userlogin' %}">Login</a></span> to write a comment</p>
+                        {% endif %}
+                    </div>
+                </section>
             </article>
         </div>
         <!-- Side widgets-->

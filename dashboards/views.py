@@ -3,7 +3,7 @@ from django.shortcuts import render,redirect
 from blogs.models import Category
 from blogs.models import Blog
 from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required,user_passes_test
 from dashboards.forms import CategoryForm
 from django.template.context_processors import request
 
@@ -13,7 +13,14 @@ from django.template.defaultfilters import slugify
 from dashboards.forms import AddUserForm,EditUserForm
 
 
-@login_required(login_url='userlogin')  #only when managers,editors are loggedin,after that only they can visit dashboards
+
+def is_manager_or_editor(user):
+    return user.groups.filter(name__in=['Manager', 'Editor']).exists()
+
+
+@login_required(login_url='userlogin')
+
+#only when managers,editors are loggedin,after that only they can visit dashboards
 def dashboard(request):
     categories = Category.objects.all().count()
     blogs_count=Blog.objects.all().count()
